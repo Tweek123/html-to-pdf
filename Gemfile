@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.3.7'
+ruby '3.2.2'
 
 gem 'rspec', '~> 3.12'
 gem 'rake', '~> 13.0'
