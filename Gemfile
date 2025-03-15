@@ -14,6 +14,6 @@ gem 'docx'
 gem 'nokogiri'
 gem 'rack'
 gem 'rest-client', '~> 2.1.0'
-gem 'ffi', '~> 1.15.5', platforms: [:x64_mingw, :mingw, :mswin]
+gem 'ffi', '~> 1.15.5',
 gem 'aspose_words_cloud', '~> 23.12.0'
 gem 'dotenv', '~> 2.8' 
