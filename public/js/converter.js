@@ -235,4 +235,36 @@ function loadExample() {
     if (newValueSelect) newValueSelect.value = 'true';
     
     convertToPdf(exampleHtml);
-} 
+}
+
+// Обработчик отправки формы DOCX
+document.getElementById('docxForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    loadingOverlay.classList.add('active');
+    
+    try {
+        const formData = new FormData(this);
+        const response = await fetch('/convert_docx', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            const htmlContent = await response.text();
+            document.getElementById('html_content').value = htmlContent;
+            
+            // Автоматически конвертируем полученный HTML в PDF
+            await convertToPdf(htmlContent);
+        } else {
+            const error = await response.text();
+            alert('Ошибка при конвертации DOCX: ' + error);
+        }
+    } catch (error) {
+        alert('Ошибка при загрузке файла: ' + error.message);
+    } finally {
+        loadingOverlay.classList.remove('active');
+        // Очищаем поле файла для возможности повторной загрузки того же файла
+        this.reset();
+    }
+}); 

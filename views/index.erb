@@ -219,14 +219,24 @@
                 <h1>HTML в PDF конвертер</h1>
                 
                 <div class="mb-4">
-                    <h3>Введите HTML код</h3>
+                    <h3>Конвертация документа</h3>
+                    <form id="docxForm" action="/convert_docx" method="post" enctype="multipart/form-data" class="mb-3">
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="docx_file" accept=".docx" required>
+                            <button type="submit" class="btn btn-primary">Конвертировать DOCX</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="mb-4">
+                    <h3>Редактирование HTML</h3>
                     <form id="convertForm">
                         <div class="button-group">
                             <button type="button" onclick="loadExample()">Загрузить пример HTML</button>
                         </div>
                         
                         <div class="form-group">
-                            <label for="html_content">Введите HTML код:</label>
+                            <label for="html_content">HTML код:</label>
                             <textarea id="html_content" name="html_content" required placeholder="<!DOCTYPE html>
 <html>
 <head>
