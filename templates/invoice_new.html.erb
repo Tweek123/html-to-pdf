@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Полис страхования банковских карт</title>
+
+    <style type="text/css">
+    {{#watermark}}
+      .watermark::after {
+        content: "ОБРАЗЕЦ";
+        position: absolute;
+        bottom: 50%;
+        left: 10%;
+        transform: translate(-50%, 50%) rotate(315deg);
+        font-size: 140px;
+        color: rgba(0, 0, 0, 0.25);
+        z-index: -1;
+        white-space: nowrap;
+        font-family: Arial, sans-serif;
+      }
+    {{/watermark}}
+
+    .police_container {
+        padding: 5px 5px 5px 5px;
+        max-width: 800px;
+        margin: 0 auto;
+        font: 9.5px/1 Arial, sans-serif;
+    }
+
+    .table_subcolontitle {
+        width: 100%;
+    }
+
+    .table_subcolontitle td.left_cell {
+        border-left: solid 1px #000000;
+        padding: 0 10px;
+    }
+
+    .polis_header {
+        padding: 3px 0;
+    }
+
+    .centered {
+        text-align: center;
+    }
+
+    .data_table {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .data_table td {
+        padding: 2px 8px;
+    }
+
+    .data_table td.table_header {
+        color: #ffffff;
+        background-color: #650965;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 3px;
+    }
+
+    .memo-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .memo-table td, .memo-table th {
+        border: 1px solid #000;
+        padding: 5px;
+    }
+
+    .memo-table th {
+        background-color: #650965;
+        color: white;
+    }
+
+    .additional-info {
+        margin: 20px 0;
+    }
+
+    .signature-block {
+        margin-top: 30px;
+    }
+    </style>
+</head>
+<body>
+    <div class="police_container">
+        <div class="polis_header">
+            <div class="table_subcolontitle">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <p>ПАО «Группа Ренессанс Страхование»</p>
+                            <p>www.renins.ru</p>
+                            <p>info@renins.com</p>
+                        </td>
+                        <td class="left_cell">
+                            <p>121614, Москва, ул. Крылатская., д. 17, корп. 1</p>
+                            <p>Тел.: 8 495 725-10-50</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="centered">
+            <h2>Полис страхования банковских карт по программе «Защита платежной карты»</h2>
+            <p>№ <%= policy_number %> от <%= policy_date %></p>
+        </div>
+
+        <div class="polis_table">
+            <p>Настоящий Полис (оферта) удостоверяет факт заключения договора страхования с ПАО «Группа Ренессанс Страхование» (далее – Страховщик). Полис заключается на основании устного заявления Страхователя, путем вручения Страховщиком настоящего Полиса, подписанного Страховщиком. Настоящий Полис заключен на условиях, изложенных в Правилах комплексного страхования рисков, связанных с использованием пластиковых карт и иных рисков № 3.1, утвержденных Приказом Генерального директора Страховщика № 139 от 02.08.2019г. (Далее по тексту – Правила страхования), являющихся неотъемлемой частью настоящего Полиса.</p>
+
+            <table class="data_table">
+                <tr>
+                    <td class="table_header">Страховщик</td>
+                </tr>
+                <tr>
+                    <td>
+                        Публичное акционерное общество «Группа Ренессанс Страхование»<br>
+                        Лицензии СЛ №1284, СИ №1284, выданные ЦБ РФ без ограничения срока действия<br>
+                        121614, г. Москва, Крылатская., д. 17, корп. 1, тел: 8-800-200-15-00<br>
+                        ОГРН 1187746794366, ИНН 7725497022, www.renins.ru
+                    </td>
+                </tr>
+            </table>
+
+            <table class="data_table">
+                <tr>
+                    <td class="table_header">Страхователь/Застрахованный/Держатель карты</td>
+                </tr>
+                <tr>
+                    <td>
+                        <%= insured_name %><br>
+                        Дата рождения: <%= birth_date %><br>
+                        Телефон: <%= phone %><br>
+                        Паспорт гражданина РФ: <%= passport %><br>
+                        Электронная почта: <%= email %>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="data_table">
+                <tr>
+                    <td class="table_header">ОПИСАНИЕ ПРОГРАММЫ СТРАХОВАНИЯ</td>
+                </tr>
+                <tr>
+                    <td>
+                        <table class="memo-table">
+                            <tr>
+                                <th>Застрахованный риск</th>
+                                <th>Страховая сумма, руб.</th>
+                            </tr>
+                            <tr>
+                                <td>Незаконное использование потерянной или украденной пластиковой карты (п.4.2.1. Правил страхования)</td>
+                                <td>100 000,00</td>
+                            </tr>
+                            <tr>
+                                <td>Незаконное снятие денежных средств со счета карты, не выбывшей из владения Держателя карты, осуществляемое с применением незаконной CNP (Card not present) транзакции (операции без предъявления карты) (п. 4.2.4.3. Правил страхования)</td>
+                                <td>100 000,00</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="additional-info">
+                <h3>Дополнительные условия:</h3>
+                <ul>
+                    <li>Территория страхования: Весь мир за исключением зон военных действий/конфликтов</li>
+                    <li>Страховая премия: 199 рублей</li>
+                    <li>Срок страхования: 1 месяц</li>
+                </ul>
+            </div>
+
+            <div class="signature-block">
+                <p>Подпись Страховщика</p>
+                <p>Искра Артем Евгеньевич<br>
+                Управляющий директор Департамента андеррайтинга розничного страхования<br>
+                Доверенность №2023/688 от 22.09.2023 г.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

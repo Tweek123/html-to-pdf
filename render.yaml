@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: docx-converter
+    env: ruby
+    buildCommand: bundle install
+    startCommand: bundle exec rackup config.ru -p $PORT -o 0.0.0.0
+    envVars:
+      - key: ASPOSE_APP_SID
+        sync: false
+      - key: ASPOSE_APP_KEY
+        sync: false 

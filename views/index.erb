@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HTML в PDF конвертер</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .layout {
+            display: flex;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .editor {
+            flex: 1;
+            min-width: 600px;
+        }
+        .preview {
+            flex: 1;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        textarea,
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 400px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .example-button {
+            background-color: #95a5a6;
+            margin-bottom: 10px;
+        }
+        .example-button:hover {
+            background-color: #7f8c8d;
+        }
+        #pdf-preview {
+            width: 100%;
+            height: calc(100vh - 100px);
+            border: none;
+            background-color: white;
+        }
+        .preview-placeholder {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+        .loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .loading::after {
+            content: "Обновление...";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+        .variables-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .variables-header button {
+            width: auto;
+        }
+        .variable-group {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr auto;
+            gap: 10px;
+            align-items: start;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .delete-button {
+            background-color: #e74c3c;
+            padding: 8px 15px;
+        }
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
+        .apply-button {
+            background-color: #27ae60;
+            margin-top: 10px;
+        }
+        .apply-button:hover {
+            background-color: #219a52;
+        }
+        .docx-upload {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .docx-upload input[type="file"] {
+            display: none;
+        }
+        .docx-upload button {
+            background-color: #95a5a6;
+            margin-bottom: 10px;
+        }
+        .docx-upload button:hover {
+            background-color: #7f8c8d;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .upload-button {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .upload-button input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        .loading-text {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay">
+        <div class="loading-text">Загрузка и конвертация файла...</div>
+    </div>
+    <div class="layout">
+        <div class="editor">
+            <div class="container">
+                <h1>HTML в PDF конвертер</h1>
+                
+                <div class="mb-4">
+                    <h3>Введите HTML код</h3>
+                    <form id="convertForm">
+                        <div class="button-group">
+                            <button type="button" onclick="loadExample()">Загрузить пример HTML</button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="html_content">Введите HTML код:</label>
+                            <textarea id="html_content" name="html_content" required placeholder="<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=&quot;UTF-8&quot;>
+    <title>Ваш документ</title>
+</head>
+<body>
+    <!-- Ваш HTML код -->
+</body>
+</html>"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="page_size">Размер страницы:</label>
+                            <select id="page_size" name="page_size">
+                                <option value="A4">A4</option>
+                                <option value="A3">A3</option>
+                                <option value="Letter">Letter</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="margin_top">Отступ сверху (мм):</label>
+                            <input type="text" id="margin_top" name="margin_top" value="20mm">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="margin_right">Отступ справа (мм):</label>
+                            <input type="text" id="margin_right" name="margin_right" value="20mm">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="margin_bottom">Отступ снизу (мм):</label>
+                            <input type="text" id="margin_bottom" name="margin_bottom" value="20mm">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="margin_left">Отступ слева (мм):</label>
+                            <input type="text" id="margin_left" name="margin_left" value="20mm">
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="variables-header">
+                                <label>Переменные:</label>
+                                <button type="button" onclick="addVariable()">Добавить переменную</button>
+                            </div>
+                            <div id="variables-container"></div>
+                            <button type="button" class="apply-button" onclick="convertToPdf()">Применить</button>
+                        </div>
+                    </form>
+                    
+                    <div id="result" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="preview">
+            <div class="container" style="height: calc(100vh - 40px);">
+                <h1>Предпросмотр PDF</h1>
+                <div id="preview-container">
+                    <div class="preview-placeholder">
+                        Начните вводить HTML код для предпросмотра PDF
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/converter.js"></script>
+</body>
+</html> 
