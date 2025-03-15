@@ -5,19 +5,81 @@ require 'securerandom'
 
 class HtmlToPdfConverter
   class << self
+    def wkhtmltopdf_path
+      if Gem.win_platform?
+        # Windows пути
+        standard_paths = [
+          'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe',
+          'C:/Program Files (x86)/wkhtmltopdf/bin/wkhtmltopdf.exe',
+          'wkhtmltopdf'
+        ]
+
+        standard_paths.each do |path|
+          if File.exist?(path)
+            puts "Найден wkhtmltopdf: #{path}"
+            return path
+          end
+        end
+
+        # Поиск через where в Windows
+        begin
+          path = `where wkhtmltopdf`.strip
+          if !path.empty? && File.exist?(path)
+            puts "Найден wkhtmltopdf через where: #{path}"
+            return path
+          end
+        rescue => e
+          puts "Ошибка при поиске через where: #{e.message}"
+        end
+      else
+        # Linux пути
+        standard_paths = [
+          '/usr/bin/wkhtmltopdf',
+          '/usr/local/bin/wkhtmltopdf',
+          'wkhtmltopdf'
+        ]
+
+        standard_paths.each do |path|
+          if File.exist?(path)
+            puts "Найден wkhtmltopdf: #{path}"
+            return path
+          end
+        end
+
+        # Поиск через which в Linux
+        begin
+          path = `which wkhtmltopdf`.strip
+          if !path.empty? && File.exist?(path)
+            puts "Найден wkhtmltopdf через which: #{path}"
+            return path
+          end
+        rescue => e
+          puts "Ошибка при поиске через which: #{e.message}"
+        end
+      end
+
+      puts "wkhtmltopdf не найден в системе"
+      puts "Пожалуйста, установите wkhtmltopdf"
+      nil
+    end
+
     def convert(html_content, output_path, options = {})
       begin
         # Создаем временный файл в текущей директории
         temp_file = File.join(Dir.pwd, "temp.html")
         File.write(temp_file, html_content, encoding: 'UTF-8')
 
-        # Путь к wkhtmltopdf
-        wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-        
-        # Проверяем существование файла
-        unless File.exist?(wkhtmltopdf)
-          puts "Ошибка: wkhtmltopdf не найден по пути #{wkhtmltopdf}"
-          puts "Пожалуйста, установите wkhtmltopdf с сайта https://wkhtmltopdf.org/downloads.html"
+        # Получаем путь к wkhtmltopdf
+        wkhtmltopdf = if !Gem.win_platform? && File.exist?('bin/wkhtmltopdf-wrapper')
+          'bin/wkhtmltopdf-wrapper'
+        else
+          wkhtmltopdf_path
+        end
+
+        puts "Путь к wkhtmltopdf: #{wkhtmltopdf}"
+
+        unless wkhtmltopdf
+          puts "Ошибка: wkhtmltopdf не найден"
           return false
         end
 
@@ -27,18 +89,21 @@ class HtmlToPdfConverter
 
         puts "Выполняем команду: #{command}"
         
-        # Выполняем конвертацию
-        result = system(command)
+        # Выполняем конвертацию с выводом stderr
+        output = `#{command} 2>&1`
+        result = $?.success?
         
         if result
           puts "PDF успешно создан: #{output_path}"
           true
         else
-          puts "Ошибка при создании PDF"
+          puts "Ошибка при создании PDF. Вывод команды:"
+          puts output
           false
         end
       rescue => e
         puts "Ошибка при конвертации: #{e.message}"
+        puts e.backtrace
         false
       ensure
         # Удаляем временный файл
@@ -137,13 +202,11 @@ class HtmlToPdfConverter
         temp_file = File.join(Dir.pwd, "temp_#{Time.now.to_i}.html")
         File.write(temp_file, rendered_html, encoding: 'UTF-8')
 
-        # Путь к wkhtmltopdf
-        wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+        # Получаем путь к wkhtmltopdf
+        wkhtmltopdf = wkhtmltopdf_path
         
-        # Проверяем существование файла
-        unless File.exist?(wkhtmltopdf)
-          puts "Ошибка: wkhtmltopdf не найден по пути #{wkhtmltopdf}"
-          puts "Пожалуйста, установите wkhtmltopdf с сайта https://wkhtmltopdf.org/downloads.html"
+        unless wkhtmltopdf
+          puts "Ошибка: wkhtmltopdf не найден"
           return false
         end
 
@@ -154,13 +217,15 @@ class HtmlToPdfConverter
         puts "Выполняем команду: #{command}"
         
         # Выполняем конвертацию
-        result = system(command)
+        output = `#{command} 2>&1`
+        result = $?.success?
         
         if result
           puts "PDF успешно создан: #{output_path}"
           true
         else
-          puts "Ошибка при создании PDF"
+          puts "Ошибка при создании PDF. Вывод команды:"
+          puts output
           false
         end
       rescue => e

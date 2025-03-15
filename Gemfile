@@ -4,7 +4,6 @@ ruby '3.3.7'
 
 gem 'rspec', '~> 3.12'
 gem 'rake', '~> 13.0'
-gem 'wkhtmltopdf-binary', '~> 0.12.6'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'puma'

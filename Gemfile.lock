@@ -126,7 +126,7 @@ DEPENDENCIES
   rspec (~> 3.12)
   sinatra
   sinatra-contrib
-  wkhtmltopdf-binary (~> 0.12.6)
+  wkhtmltopdf-binary (~> 0.12.6.8)
 
 RUBY VERSION
    ruby 3.3.7p123

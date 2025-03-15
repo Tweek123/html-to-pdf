@@ -1,11 +1,13 @@
 services:
   - type: web
-    name: docx-converter
+    name: pdf-converter
     env: ruby
-    buildCommand: bundle install
-    startCommand: bundle exec rackup config.ru -p $PORT -o 0.0.0.0
+    buildCommand: |
+      # Установка wkhtmltopdf
+      apt-get update -y
+      apt-get install -y wkhtmltopdf xvfb
+      bundle install
+    startCommand: bundle exec rackup -p $PORT
     envVars:
-      - key: ASPOSE_APP_SID
-        sync: false
-      - key: ASPOSE_APP_KEY
-        sync: false 
+      - key: RACK_ENV
+        value: production 
