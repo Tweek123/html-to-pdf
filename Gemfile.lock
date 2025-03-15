@@ -55,6 +55,8 @@ GEM
     nio4r (2.7.4)
     nokogiri (1.18.4-x64-mingw-ucrt)
       racc (~> 1.4)
+    nokogiri (1.18.4-x86_64-linux-gnu)
+      racc (~> 1.4)
     puma (6.6.0)
       nio4r (~> 2.0)
     racc (1.8.1)
@@ -107,6 +109,7 @@ GEM
 
 PLATFORMS
   x64-mingw-ucrt
+  x86_64-linux
 
 DEPENDENCIES
   aspose_words_cloud (~> 23.12.0)
